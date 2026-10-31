@@ -52,4 +52,30 @@ public class FileDatabaseManager {
             
         }   
     }
+    
+    public static List<String[]> readAllRecords(String path)throws IOException{
+        List<String[]> records = new ArrayList<>();//collection
+        File file = new File(path);
+        
+        if(!file.exists()){
+                return records;
+            }
+        
+        try(BufferedReader reader = new BufferedReader(new FileReader(file))){
+            String line;
+            
+            while((line=reader.readLine())!= null){
+                if(!line.trim().isEmpty()){
+                    String[] fields = line.split(",");
+                    records.add(fields);
+                    
+                }
+                
+            }
+            
+            
+        }
+        
+        return records;
+    }
 }
