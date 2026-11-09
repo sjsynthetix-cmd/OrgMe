@@ -1,6 +1,6 @@
 package com.orgme;
 
-import com.orgme.util.FileDatabaseManager;
+import com.orgme.model.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -8,7 +8,11 @@ public class Main {
         System.out.println("     OrgMe - Software Consultation & Management   ");
         System.out.println("==================================================");
         System.out.println("System initialized successfully.");
-        FileDatabaseManager.initializeDatabase();
+        System.out.println();
+        
     }
-    
+        
 }
+
+
+
