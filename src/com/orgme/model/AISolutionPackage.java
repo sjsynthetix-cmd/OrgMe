@@ -1,17 +1,19 @@
 
 package com.orgme.model;
 
+// OOP Principle: Inheritance - Extends ServicePackage
 public class AISolutionPackage extends ServicePackage {
     private String aiModelType;
     private boolean requiresDedicatedGpuTraining;
-    public AISolutionPackage(String packageId, String packageName, double basePrice, 
-        int estimatedDays, String aiModelType, 
-        boolean requiresDedicatedGpuTraining) {
+
+    public AISolutionPackage(String packageId, String packageName, double basePrice, int estimatedDays,
+                             String aiModelType, boolean requiresDedicatedGpuTraining) {
         super(packageId, packageName, basePrice, estimatedDays);
         this.aiModelType = aiModelType;
         this.requiresDedicatedGpuTraining = requiresDedicatedGpuTraining;
     }
 
+    // OOP Principle: Polymorphism (Method Overriding) - Dedicated GPU Compute (+LKR 60,000)
     @Override
     public double calculateEstimatedCost() {
         double total = super.basePrice;
@@ -23,13 +25,9 @@ public class AISolutionPackage extends ServicePackage {
 
     @Override
     public void printPackageDetails() {
-        System.out.println("--- AI Solution Package Details ---");
-        System.out.println("ID: " + packageId);
-        System.out.println("Name: " + packageName);
-        System.out.println("Model Type: " + aiModelType);
-        System.out.println("GPU Cluster: " + requiresDedicatedGpuTraining);
-        System.out.println("Total Estimated Cost: LKR " + calculateEstimatedCost());
-        System.out.println();
+        System.out.printf("[%s] %s | AI Type: %s | Dedicated GPU Cluster: %s | Base: LKR %,.2f | Total: LKR %,.2f%n",
+                packageId, packageName, aiModelType, 
+                (requiresDedicatedGpuTraining ? "YES (+LKR 60,000)" : "NO"), basePrice, calculateEstimatedCost());
     }
- }
+}
 

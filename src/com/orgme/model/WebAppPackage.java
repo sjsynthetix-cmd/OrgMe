@@ -1,16 +1,19 @@
 
 package com.orgme.model;
 
+// OOP Principle: Inheritance - Extends ServicePackage
 public class WebAppPackage extends ServicePackage {
     private boolean includeCloudHosting;
-    private int numberOfDatabaseEntities; 
-    
-    public WebAppPackage(String packageId, String packageName, double basePrice,int estimatedDays, boolean includeCloudHosting,int numberOfDatabaseEntities){
+    private int numberOfDatabaseEntities;
+
+    public WebAppPackage(String packageId, String packageName, double basePrice, int estimatedDays,
+                         boolean includeCloudHosting, int numberOfDatabaseEntities) {
         super(packageId, packageName, basePrice, estimatedDays);
         this.includeCloudHosting = includeCloudHosting;
         this.numberOfDatabaseEntities = numberOfDatabaseEntities;
     }
 
+    // OOP Principle: Polymorphism (Method Overriding) - Cloud Hosting (+LKR 25,000) and Database entities (+LKR 2,000 each)
     @Override
     public double calculateEstimatedCost() {
         double total = super.basePrice;
@@ -23,12 +26,8 @@ public class WebAppPackage extends ServicePackage {
 
     @Override
     public void printPackageDetails() {
-        System.out.println("--- Web App Package Details ---");
-        System.out.println("ID: " + packageId );
-        System.out.println("Name: " + packageName);
-        System.out.println("Cloud Hosting: " + includeCloudHosting);
-        System.out.println("DB Entities: " + numberOfDatabaseEntities);
-        System.out.println("Total Estimated Cost: LKR " + calculateEstimatedCost());
-        System.out.println();
+        System.out.printf("[%s] %s | Cloud Hosting: %s | DB Entities: %d | Base: LKR %,.2f | Total: LKR %,.2f%n",
+                packageId, packageName, (includeCloudHosting ? "YES (+LKR 25,000)" : "NO"), 
+                numberOfDatabaseEntities, basePrice, calculateEstimatedCost());
     }
 }
