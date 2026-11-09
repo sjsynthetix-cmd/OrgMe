@@ -1,0 +1,2 @@
+STF01,sandaru,admin123,STAFF,Lead Architect
+CL01,alpha_client,pass123,CLIENT,Alpha Corp,150000.0
