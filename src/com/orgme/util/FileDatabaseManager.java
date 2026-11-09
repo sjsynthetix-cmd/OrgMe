@@ -43,7 +43,7 @@ public class FileDatabaseManager {
             System.out.println(e);
         }
     } 
-
+    
     public static void appendRecord (String path, String details)throws IOException {
         try( BufferedWriter writeRecord = new BufferedWriter(new FileWriter(path, true))) {
            

@@ -24,9 +24,12 @@ public class AISolutionPackage extends ServicePackage {
     @Override
     public void printPackageDetails() {
         System.out.println("--- AI Solution Package Details ---");
-        System.out.println("ID: " + packageId + " | Name: " + packageName);
-        System.out.println("Model Type: " + aiModelType + " | GPU Cluster: " + requiresDedicatedGpuTraining);
+        System.out.println("ID: " + packageId);
+        System.out.println("Name: " + packageName);
+        System.out.println("Model Type: " + aiModelType);
+        System.out.println("GPU Cluster: " + requiresDedicatedGpuTraining);
         System.out.println("Total Estimated Cost: LKR " + calculateEstimatedCost());
+        System.out.println();
     }
  }
 
