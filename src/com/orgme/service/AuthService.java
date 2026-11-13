@@ -32,7 +32,7 @@ public class AuthService {
                     String extra = data[4].trim();
 
                     if ("CLIENT".equalsIgnoreCase(role)) {
-                        double budgetLimit = 200000.0;
+                        double budgetLimit = 200000.0; // Default starter tier allowance
                         if (data.length >= 6) {
                             try {
                                 budgetLimit = Double.parseDouble(data[5].trim());
@@ -54,7 +54,7 @@ public class AuthService {
             registerUser(defaultStaff);
         }
         if (!userRegistry.containsKey("alpha_client")) {
-            Client defaultClient = new Client("CL01", "alpha_client", "pass123", "Alpha Corp", 150000.0);
+            Client defaultClient = new Client("CL01", "alpha_client", "pass123", "Alpha Corp", 200000.0);
             registerUser(defaultClient);
         }
     }
@@ -93,9 +93,9 @@ public class AuthService {
         return registerUser(client);
     }
 
-    // OOP Principle: Method Overloading 2 - Client registration with Default Starter Budget
+    // OOP Principle: Method Overloading 2 - Client registration with Default Starter Budget (LKR 200,000.00)
     public boolean registerClient(String username, String password, String companyName) {
-        return registerClient(username, password, companyName, 50000.0);
+        return registerClient(username, password, companyName, 200000.0);
     }
 
     // Authenticates user by username and password
