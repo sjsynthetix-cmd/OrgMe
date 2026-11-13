@@ -1,8 +1,9 @@
 package com.orgme.model;
+
 import com.orgme.exception.InvalidPaymentException;
 import com.orgme.util.Payable;
-// OOP Principle: Interface Implementation - Invoice implements Payable contract
 
+// OOP Principle: Interface Implementation - Invoice implements Payable contract
 public class Invoice implements Payable {
 
     private String invoiceId;
@@ -14,6 +15,7 @@ public class Invoice implements Payable {
     private double paidAmount;
     private boolean isSettled;
 
+    // Standard constructor for new invoices
     public Invoice(String invoiceId, String projectId, String clientUsername, double grossAmount, double discountAmount) {
         this.invoiceId = invoiceId;
         this.projectId = projectId;
@@ -23,6 +25,18 @@ public class Invoice implements Payable {
         this.taxRate = 0.025; // 2.5% standard tax
         this.paidAmount = 0.0;
         this.isSettled = false;
+    }
+
+    // Overloaded constructor for restoring invoices from storage
+    public Invoice(String invoiceId, String projectId, String clientUsername, double grossAmount, double discountAmount, double paidAmount, boolean isSettled) {
+        this.invoiceId = invoiceId;
+        this.projectId = projectId;
+        this.clientUsername = clientUsername;
+        this.grossAmount = grossAmount;
+        this.discountAmount = discountAmount;
+        this.taxRate = 0.025;
+        this.paidAmount = paidAmount;
+        this.isSettled = isSettled;
     }
 
     public String getInvoiceId() {
@@ -49,6 +63,10 @@ public class Invoice implements Payable {
         return paidAmount;
     }
 
+    public double getTaxRate() {
+        return taxRate;
+    }
+
     // Calculates taxable total after discount plus tax
     @Override
     public double calculateNetPayable() {
@@ -66,8 +84,8 @@ public class Invoice implements Payable {
         if (paymentAmount <= 0) {
             throw new InvalidPaymentException("Payment must be greater than zero!");
         }
-        if (paymentAmount > getRemainingBalance()) {
-            throw new InvalidPaymentException("Payment of LKR " + paymentAmount + " exceeds remaining balance of LKR " + getRemainingBalance());
+        if (paymentAmount > getRemainingBalance() + 0.01) {
+            throw new InvalidPaymentException("Payment of LKR " + paymentAmount + " exceeds remaining balance of LKR " + String.format("%.2f", getRemainingBalance()));
         }
         this.paidAmount += paymentAmount;
         if (getRemainingBalance() <= 0.01) {
@@ -85,6 +103,4 @@ public class Invoice implements Payable {
                 invoiceId, projectId, clientUsername, grossAmount, discountAmount, calculateNetPayable(), paidAmount,
                 (isSettled ? "SETTLED" : "UNPAID (Bal: LKR " + String.format("%,.2f", getRemainingBalance()) + ")"));
     }
-
 }
-
