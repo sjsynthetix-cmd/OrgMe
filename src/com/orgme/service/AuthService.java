@@ -1,5 +1,4 @@
 package com.orgme.service;
-import java.io.*;
 
 import com.orgme.model.User;
 import com.orgme.model.Client;
@@ -33,7 +32,13 @@ public class AuthService {
                     String extra = data[4].trim();
 
                     if ("CLIENT".equalsIgnoreCase(role)) {
-                        userRegistry.put(uName, new Client(id, uName, pwd, extra, 50000.0));
+                        double budgetLimit = 200000.0;
+                        if (data.length >= 6) {
+                            try {
+                                budgetLimit = Double.parseDouble(data[5].trim());
+                            } catch (NumberFormatException ignored) {}
+                        }
+                        userRegistry.put(uName, new Client(id, uName, pwd, extra, budgetLimit));
                     } else if ("STAFF".equalsIgnoreCase(role)) {
                         userRegistry.put(uName, new Staff(id, uName, pwd, extra));
                     }
@@ -63,8 +68,14 @@ public class AuthService {
 
         // Persist to users.txt file
         try {
-            String extraField = (user instanceof Client) ? ((Client) user).getCompanyName() : ((Staff) user).getSpecialization();
-            String record = user.getUserId() + "," + user.getUsername() + "," + "protected" + "," + user.getRole() + "," + extraField;
+            String record;
+            if (user instanceof Client) {
+                Client c = (Client) user;
+                record = c.getUserId() + "," + c.getUsername() + "," + c.getPassword() + "," + c.getRole() + "," + c.getCompanyName() + "," + c.getBudgetLimit();
+            } else {
+                Staff s = (Staff) user;
+                record = s.getUserId() + "," + s.getUsername() + "," + s.getPassword() + "," + s.getRole() + "," + s.getSpecialization();
+            }
             FileDatabaseManager.appendRecord(FileDatabaseManager.USERS_FILE, record);
         } catch (IOException e) {
             System.out.println("Database sync error: " + e.getMessage());
@@ -72,14 +83,19 @@ public class AuthService {
         return true;
     }
 
-    // Convenience method for Client registration
-    public boolean registerClient(String username, String password, String companyName) {
+    // OOP Principle: Method Overloading 1 - Client registration with Custom Project Budget
+    public boolean registerClient(String username, String password, String companyName, double budgetLimit) {
         if (userRegistry.containsKey(username)) {
             return false;
         }
         String generatedId = "CL" + (userRegistry.size() + 1);
-        Client client = new Client(generatedId, username, password, companyName, 25000.0);
+        Client client = new Client(generatedId, username, password, companyName, budgetLimit);
         return registerUser(client);
+    }
+
+    // OOP Principle: Method Overloading 2 - Client registration with Default Starter Budget
+    public boolean registerClient(String username, String password, String companyName) {
+        return registerClient(username, password, companyName, 50000.0);
     }
 
     // Authenticates user by username and password
