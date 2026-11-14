@@ -1,0 +1,2 @@
+PRJ-102,test,AI,CLOSED_TESTING,0,20,false,Initial order logged.
+PRJ-101,alpha_client,MOBILE,CLOSED_TESTING,4,20,false,Monitored active project.

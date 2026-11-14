@@ -20,10 +20,10 @@ public class BookingService {
     }
 
     private void seedDefaultSlots() {
-        slotList.add(new ConsultationSlot("SLOT-101", "2026-11-10", "10:00 AM"));
-        slotList.add(new ConsultationSlot("SLOT-102", "2026-11-10", "02:00 PM"));
-        slotList.add(new ConsultationSlot("SLOT-103", "2026-11-12", "11:00 AM"));
-        slotList.add(new ConsultationSlot("SLOT-104", "2026-11-15", "03:30 PM"));
+        slotList.add(new ConsultationSlot("SLOT-101", "2026-11-21", "10:00 AM"));
+        slotList.add(new ConsultationSlot("SLOT-102", "2026-11-22", "02:00 PM"));
+        slotList.add(new ConsultationSlot("SLOT-103", "2026-11-23", "11:00 AM"));
+        slotList.add(new ConsultationSlot("SLOT-104", "2026-11-24", "03:30 PM"));
     }
 
     // Restores booked slots from bookings.txt so bookings persist across runs

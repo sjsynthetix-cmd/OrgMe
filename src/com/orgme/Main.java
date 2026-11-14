@@ -10,7 +10,11 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 
-// System Integrator: Central Console Execution Hub
+/**
+ * System Integrator: Central Console Execution Hub
+ * Course: IIC 1153 - Object Oriented Programming
+ * Integrates: User Auth, Service Packages, AI Booking, Project Tracking, and Billing Modules.
+ */
 public class Main {
     public static void main(String[] args) {
         // Initialize file storage directory and txt tables
@@ -23,7 +27,7 @@ public class Main {
         TrackingService trackingService = new TrackingService();
         BillingService billingService = new BillingService();
 
-        // Catalog of Software Service Packages
+        // Catalog of Software Service Packages (OOP Principle: Polymorphic Collection)
         List<ServicePackage> packageCatalog = new ArrayList<>();
         packageCatalog.add(new MobileAppPackage("PKG-MOB-01", "Android Enterprise & Play Store Closed Testing", 120000.0, 30, true, "Android Native"));
         packageCatalog.add(new MobileAppPackage("PKG-MOB-02", "Cross-Platform Flutter Mobile Suite", 110000.0, 25, false, "Flutter iOS/Android"));
@@ -46,24 +50,22 @@ public class Main {
 
             try {
                 int choice = scanner.nextInt();
-                scanner.nextLine(); // Clear buffer
+                scanner.nextLine(); // Clear newline buffer
 
                 switch (choice) {
                     case 1:
                         System.out.print("\nEnter Username: ");
-                        String username = scanner.nextLine();
+                        String uName = scanner.nextLine();
                         System.out.print("Enter Password: ");
-                        String password = scanner.nextLine();
+                        String pwd = scanner.nextLine();
 
-                        // Polymorphic User Authentication
-                        User loggedInUser = authService.login(username, password);
-
+                        User loggedInUser = authService.login(uName, pwd);
                         if (loggedInUser != null) {
                             System.out.println("\nLogin Successful! Welcome, " + loggedInUser.getUsername() + " [" + loggedInUser.getRole() + "]");
                             if (loggedInUser instanceof Client) {
                                 handleClientSession(scanner, (Client) loggedInUser, packageCatalog, aiEngine, bookingService, trackingService, billingService);
                             } else if (loggedInUser instanceof Staff) {
-                                handleStaffSession(scanner, (Staff) loggedInUser, trackingService, billingService);
+                                handleStaffSession(scanner, (Staff) loggedInUser, bookingService, trackingService, billingService);
                             }
                         } else {
                             System.out.println("\nAuthentication Failed: Invalid username or password.\n");
@@ -71,33 +73,47 @@ public class Main {
                         break;
 
                     case 2:
-                        System.out.println("\n--- Register New Corporate Client ---");
+                        System.out.println("\n--- Client Self-Service Onboarding ---");
                         System.out.print("Desired Username: ");
-                        String newUname = scanner.nextLine();
-                        System.out.print("Password: ");
-                        String newPwd = scanner.nextLine();
-                        System.out.print("Company / Business Name: ");
-                        String company = scanner.nextLine();
+                        String regUser = scanner.nextLine();
+                        System.out.print("Secure Password: ");
+                        String regPwd = scanner.nextLine();
+                        System.out.print("Registered Business / Company Name: ");
+                        String regCompany = scanner.nextLine();
+                        System.out.print("Estimated Project Budget (LKR) [Default: 200,000.00]: ");
+                        String budgetInput = scanner.nextLine();
 
-                        boolean registered = authService.registerClient(newUname, newPwd, company);
-                        if (registered) {
-                            System.out.println("Registration successful! You may now login.\n");
+                        boolean registered;
+                        if (budgetInput.trim().isEmpty()) {
+                            registered = authService.registerClient(regUser, regPwd, regCompany);
                         } else {
-                            System.out.println("Registration failed: Username already exists.\n");
+                            try {
+                                double budget = Double.parseDouble(budgetInput.trim());
+                                registered = authService.registerClient(regUser, regPwd, regCompany, budget);
+                            } catch (NumberFormatException e) {
+                                System.out.println("Invalid numeric input. Registering with default starter budget (LKR 200,000.00).");
+                                registered = authService.registerClient(regUser, regPwd, regCompany);
+                            }
+                        }
+
+                        if (registered) {
+                            System.out.println("Client registration completed successfully! Please login with your credentials.\n");
+                        } else {
+                            System.out.println("Registration rejected: Username already registered in directory!\n");
                         }
                         break;
 
                     case 3:
-                        System.out.println("\nShutting down Nexis Software Solutions Hub. Goodbye!");
+                        System.out.println("\nShutting down Nexis Client Hub. Thank you for using our services!");
                         systemRunning = false;
                         break;
 
                     default:
-                        System.out.println("\nInvalid choice. Please select 1, 2, or 3.\n");
+                        System.out.println("Invalid option! Please select 1, 2, or 3.\n");
                 }
             } catch (InputMismatchException e) {
-                System.out.println("\nError: Numeric input required!");
-                scanner.nextLine();
+                System.out.println("Error: Numeric input required!");
+                scanner.nextLine(); // Clear invalid token
             }
         }
         scanner.close();
@@ -108,14 +124,27 @@ public class Main {
                                             AIEstimatorEngine aiEngine, BookingService bookingService,
                                             TrackingService trackingService, BillingService billingService) {
         boolean clientSession = true;
+
+        // Polymorphism: Display Client profile dashboard once upon login
+        client.displayDashboard();
+
         while (clientSession) {
-            // Polymorphism: Invokes Client's overridden dashboard
-            client.displayDashboard();
+            // Interactive Client Operations Menu
+            System.out.println("================================================================================");
+            System.out.println("                           CLIENT OPERATIONS MENU");
+            System.out.println("================================================================================");
+            System.out.println("  [1] Explore Software Engineering Packages");
+            System.out.println("  [2] Run AI Architectural Scope & Cost Estimator");
+            System.out.println("  [3] Reserve Consultation Slot");
+            System.out.println("  [4] Track Active Project & Play Store Closed Testing");
+            System.out.println("  [5] View Invoices & Settle Outstanding Balance");
+            System.out.println("  [0] Logout to Main Menu");
+            System.out.println("--------------------------------------------------------------------------------");
             System.out.print("Select an option (0-5): ");
 
             try {
                 int opt = scanner.nextInt();
-                scanner.nextLine();
+                scanner.nextLine(); // Clear buffer
 
                 switch (opt) {
                     case 1:
@@ -134,7 +163,7 @@ public class Main {
                         int users = scanner.nextInt();
                         System.out.print("Requires Google Play Store 14-Day Testing? (true/false): ");
                         boolean playTest = scanner.nextBoolean();
-                        scanner.nextLine();
+                        scanner.nextLine(); // Clear buffer
 
                         aiEngine.runAiEstimation(pType, users, playTest);
                         break;
@@ -167,7 +196,7 @@ public class Main {
                         if (!invId.trim().isEmpty()) {
                             System.out.print("Enter Payment Amount (LKR): ");
                             double payAmt = scanner.nextDouble();
-                            scanner.nextLine();
+                            scanner.nextLine(); // Clear buffer
 
                             try {
                                 billingService.settlePayment(invId, payAmt);
@@ -187,22 +216,34 @@ public class Main {
                 }
             } catch (InputMismatchException e) {
                 System.out.println("Error: Numeric input required!");
-                scanner.nextLine();
+                scanner.nextLine(); // Clear invalid token
             }
         }
     }
 
     // Handles interactive Staff session
-    private static void handleStaffSession(Scanner scanner, Staff staff, TrackingService trackingService, BillingService billingService) {
+    private static void handleStaffSession(Scanner scanner, Staff staff, BookingService bookingService,
+                                           TrackingService trackingService, BillingService billingService) {
         boolean staffSession = true;
+
         while (staffSession) {
-            // Polymorphism: Invokes Staff's overridden dashboard
-            staff.displayDashboard();
-            System.out.print("Select an option (0-4): ");
+            // Staff Admin Menu
+            System.out.println("================================================================================");
+            System.out.println("                           STAFF ADMIN MENU");
+            System.out.println("================================================================================");
+            System.out.println("  [1] View All Active Projects & Delivery Status");
+            System.out.println("  [2] Advance 14-Day Play Store Testing Cycle");
+            System.out.println("  [3] Approve Project Deployment Release");
+            System.out.println("  [4] Manage Invoices & Issue New Billing");
+            System.out.println("  [5] View Architecture Consultation Booking Slots");
+            System.out.println("  [6] Assign & Create New Project for a Client");
+            System.out.println("  [0] Logout to Main Menu");
+            System.out.println("--------------------------------------------------------------------------------");
+            System.out.print("Select an option (0-6): ");
 
             try {
                 int opt = scanner.nextInt();
-                scanner.nextLine();
+                scanner.nextLine(); // Clear buffer
 
                 switch (opt) {
                     case 1:
@@ -251,11 +292,33 @@ public class Main {
                             double gAmt = scanner.nextDouble();
                             System.out.print("Discount Amount (LKR): ");
                             double dAmt = scanner.nextDouble();
-                            scanner.nextLine();
+                            scanner.nextLine(); // Clear buffer
 
                             Invoice issued = billingService.issueInvoice(pId, cUser, gAmt, dAmt);
                             System.out.println("Invoice successfully issued: " + issued.getInvoiceId());
                         }
+                        break;
+
+                    case 5:
+                        bookingService.displayAvailableSlots();
+                        break;
+
+                    case 6:
+                        System.out.println("\n--- Assign & Create New Project for Client ---");
+                        System.out.print("Client Username: ");
+                        String cUser = scanner.nextLine();
+                        System.out.print("Project Package Type (MOBILE / WEB / AI): ");
+                        String pType = scanner.nextLine().toUpperCase();
+                        System.out.print("Requires 14-Day Play Store Closed Testing? (true/false): ");
+                        boolean playTest = scanner.nextBoolean();
+                        scanner.nextLine(); // Clear buffer
+
+                        ProjectOrder newPrj = trackingService.createProject(cUser, pType, playTest);
+                        System.out.println("\nProject successfully created & assigned to Client repository!");
+                        System.out.printf("  • Project ID       : %s%n", newPrj.getProjectId());
+                        System.out.printf("  • Client Assigned  : %s%n", newPrj.getClientUsername());
+                        System.out.printf("  • Package Type     : %s%n", newPrj.getPackageType());
+                        System.out.printf("  • Current Phase    : %s%n\n", newPrj.getCurrentPhase());
                         break;
 
                     case 0:
@@ -264,11 +327,11 @@ public class Main {
                         break;
 
                     default:
-                        System.out.println("Invalid option! Please choose 0-4.");
+                        System.out.println("Invalid option! Please choose 0-6.");
                 }
             } catch (InputMismatchException e) {
                 System.out.println("Error: Numeric input required!");
-                scanner.nextLine();
+                scanner.nextLine(); // Clear invalid token
             }
         }
     }
